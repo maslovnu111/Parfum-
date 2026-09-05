@@ -1,5 +1,22 @@
 {
-  "fail_count": 2,
-  "last_check": "2026-09-05T16:27:19+00:00",
-  "last_error": "curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: HTTPError 403 Client Error: Forbidden for url: https://r.jina.ai/https://www.douglas.de/de/p/5011160013"
+  "availability": "в наявності",
+  "fail_count": 0,
+  "last_check": "2026-09-05T16:45:16+00:00",
+  "min_price": 94.0,
+  "old_price": null,
+  "price": 94.0,
+  "promo_codes": [
+    "BANANA"
+  ],
+  "promo_lines": [
+    "2 Gratis-Proben nach Wahl ab 10 € ¹",
+    "GRATIS: 7 Duftproben von Juliette has a gun zur Bestellung ab 89 €",
+    "Achtung: Kann allergische Hautreaktionen verursachen.",
+    "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
+    "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
+    "2 Gratis-Proben nach Wahl",
+    "Studentenrabatt",
+    "Douglas Angebote"
+  ],
+  "source": "ScraperAPI"
 }
