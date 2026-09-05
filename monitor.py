@@ -299,6 +299,31 @@ def parse_availability(text: str):
 
 CODE_RE = re.compile(r"Code[:\s]{1,3}([A-Z][A-Z0-9]{2,19})")
 
+# Той самий бірюзовий банер угорі сторінки (над навігацією, перед пошуком) —
+# саме там Douglas публікує головну поточну акцію. Він не завжди містить
+# слова на кшталт "rabatt"/"gratis", тому виловлюємо його не за ключовими
+# словами, а за місцем на сторінці: одразу перед рядком "Gehe zurück"
+# (кнопка "назад" біля пошуку, є на кожній сторінці Douglas).
+BANNER_END_MARK = re.compile(r"Gehe\s*zur[uü]ck", re.I)
+BANNER_START_ANCHORS = ["Filialen", "Beauty Card", "Goodies", "Beauty Services", "Werktage Lieferzeit"]
+
+
+def parse_top_banner(text: str) -> str:
+    m = BANNER_END_MARK.search(text)
+    if not m:
+        return ""
+    end = m.start()
+    zone = text[max(0, end - 600):end]
+    start = 0
+    for anchor in BANNER_START_ANCHORS:
+        pos = zone.lower().rfind(anchor.lower())
+        if pos != -1:
+            start = max(start, pos + len(anchor))
+    banner = zone[start:].strip(" \n\t-–—|")
+    banner = re.sub(r"\s*\n\s*", " ", banner)
+    banner = re.sub(r"\s{2,}", " ", banner)
+    return banner.strip()
+
 
 def parse_promos(text: str):
     """Повертає (список_промокодів, список_акційних_рядків)."""
@@ -376,7 +401,11 @@ def send_telegram(html_text: str) -> bool:
 # ══════════════════ ОСНОВНА ЛОГІКА ══════════════════
 
 def build_message(header, price, old_price, prev_price, min_price,
-                  availability, new_codes, new_promos, all_codes):
+                  availability, new_codes, new_promos, all_codes,
+                  banner="", banner_changed=False):
+    def esc(s):
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
     parts = [header, ""]
     parts.append(f"<b>{PRODUCT_NAME}</b> · {VARIANT}")
 
@@ -405,6 +434,15 @@ def build_message(header, price, old_price, prev_price, min_price,
         except ValueError:
             pass
 
+    # Банер угорі сторінки показуємо завжди, незалежно від приводу
+    # для сповіщення — саме про це просив користувач.
+    parts.append("")
+    mark = "🆕 " if banner_changed else ""
+    if banner:
+        parts.append(f"📌 {mark}<b>Банер угорі сторінки:</b> {esc(banner)}")
+    else:
+        parts.append(f"📌 {mark}<b>Банер угорі сторінки:</b> зараз порожній")
+
     if new_codes:
         parts.append("")
         parts.append("🎟 <b>Нові промокоди:</b> " + ", ".join(f"<code>{c}</code>" for c in new_codes))
@@ -416,8 +454,7 @@ def build_message(header, price, old_price, prev_price, min_price,
         parts.append("")
         parts.append("📣 <b>Нові акційні написи:</b>")
         for line in new_promos[:8]:
-            safe = line.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-            parts.append(f"• {safe}")
+            parts.append(f"• {esc(line)}")
 
     parts.append("")
     parts.append(f'🔗 <a href="{PRODUCT_URL}">Відкрити на Douglas</a>')
@@ -456,6 +493,10 @@ def main():
     prices = parse_prices(text, VARIANT)
     availability = parse_availability(text)
     codes, promo_lines = parse_promos(text)
+    banner = parse_top_banner(text)
+    if banner:
+        # щоб те саме не показувалося і в банері, і в загальному списку акцій
+        promo_lines = [l for l in promo_lines if l.lower() != banner.lower()]
 
     if not prices:
         state["fail_count"] = int(state.get("fail_count", 0)) + 1
@@ -480,6 +521,7 @@ def main():
     prev_codes = set(state.get("promo_codes", []))
     prev_promos = set(x.lower() for x in state.get("promo_lines", []))
     prev_avail = state.get("availability")
+    prev_banner = state.get("top_banner", "")
     min_price = state.get("min_price")
     first_run = prev_price is None
 
@@ -487,7 +529,7 @@ def main():
     new_promos = [line for line in promo_lines if line.lower() not in prev_promos]
 
     log(f"Ціна: {price} | стара: {old_price} | наявність: {availability} "
-        f"| кодів: {len(codes)} | нових акцій: {len(new_promos)}")
+        f"| кодів: {len(codes)} | нових акцій: {len(new_promos)} | банер: {banner!r}")
 
     # ── 3. Що вважаємо приводом для сповіщення ──
     reasons = []
@@ -502,6 +544,8 @@ def main():
             reasons.append("promos")
         if availability != prev_avail and availability in ("в наявності", "немає"):
             reasons.append("stock")
+        if banner != prev_banner:
+            reasons.append("banner")
 
     # ── 4. Оновлюємо стан ──
     state["price"] = price
@@ -509,6 +553,7 @@ def main():
     state["availability"] = availability
     state["promo_codes"] = codes
     state["promo_lines"] = promo_lines
+    state["top_banner"] = banner
     state["source"] = source
     state["min_price"] = price if min_price is None else min(min_price, price)
     if not first_run and prev_price is not None and price != prev_price:
@@ -524,6 +569,8 @@ def main():
         header = "ℹ️ <b>Перевірка вручну</b> — змін немає"
     elif "price_drop" in reasons or "discount" in reasons:
         header = "🔻 <b>Ціна впала!</b>"
+    elif "banner" in reasons:
+        header = "📌 <b>Змінився банер угорі сторінки Douglas</b>"
     elif "codes" in reasons or "promos" in reasons:
         header = "🎉 <b>Нова акція на Douglas</b>"
     elif "stock" in reasons:
@@ -542,6 +589,8 @@ def main():
         new_codes=new_codes,
         new_promos=new_promos,
         all_codes=codes,
+        banner=banner,
+        banner_changed=("banner" in reasons),
     ))
 
 
