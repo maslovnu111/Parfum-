@@ -37,6 +37,11 @@ try:
 except ImportError:  # cloudscraper теж не обов'язковий
     cloudscraper = None
 
+try:
+    from curl_cffi import requests as cffi_requests  # імітує TLS-відбиток браузера
+except ImportError:
+    cffi_requests = None
+
 
 # ══════════════════ НАЛАШТУВАННЯ ══════════════════
 
@@ -101,6 +106,16 @@ def log(msg):
     print(f"[{datetime.now(KYIV_TZ):%H:%M:%S}] {msg}", flush=True)
 
 
+def should_alert_on_failure(fail_count: int) -> bool:
+    """
+    Коли саме сповіщати про технічний збій.
+    1-ша і 3-тя невдала спроба поспіль — щоб одразу було видно проблему
+    (особливо важливо під час першого налаштування). Далі — раз на 9 спроб,
+    щоб не спамити, якщо блокування розтягнеться на дні.
+    """
+    return fail_count in (1, 3) or fail_count % 9 == 0
+
+
 def to_float(german_price: str):
     """'1.234,56' -> 1234.56"""
     try:
@@ -119,6 +134,26 @@ def fmt(value):
 
 
 # ══════════════════ ЗАВАНТАЖЕННЯ СТОРІНКИ ══════════════════
+
+def fetch_curl_cffi():
+    """
+    Запити з реальним TLS/HTTP2-відбитком Chrome. Anti-bot системи (DataDome,
+    PerimeterX, Akamai) насамперед дивляться саме на TLS-fingerprint —
+    у звичайного `requests` він показує "це не браузер" ще до заголовків.
+    Не дає стовідсоткової гарантії (репутація самої IP-адреси теж важлива),
+    але це найдешевший спосіб суттєво підняти шанс пройти перевірку.
+    """
+    if cffi_requests is None:
+        raise RuntimeError("curl_cffi не встановлено")
+    r = cffi_requests.get(
+        PRODUCT_URL,
+        headers=BROWSER_HEADERS,
+        impersonate="chrome124",
+        timeout=30,
+    )
+    r.raise_for_status()
+    return r.text
+
 
 def fetch_direct():
     r = requests.get(PRODUCT_URL, headers=BROWSER_HEADERS, timeout=30)
@@ -148,6 +183,7 @@ def fetch_jina():
 def get_page():
     """Пробує способи по черзі. Повертає (текст_сторінки, назва_способу)."""
     attempts = [
+        ("curl_cffi (Chrome-фінгерпринт)", fetch_curl_cffi),
         ("прямий запит", fetch_direct),
         ("cloudscraper", fetch_cloudscraper),
         ("r.jina.ai", fetch_jina),
@@ -380,11 +416,14 @@ def main():
         state["last_error"] = str(e)[:500]
         save_state(state)
         log(f"Усі способи завантаження провалилися ({state['fail_count']} поспіль)")
-        if state["fail_count"] == 3 or state["fail_count"] % 9 == 0:
+        if should_alert_on_failure(state["fail_count"]):
             send_telegram(
                 "⚠️ <b>Бот не може відкрити сторінку Douglas</b>\n\n"
                 f"Невдалих спроб поспіль: {state['fail_count']}\n"
                 f"<code>{str(e)[:300]}</code>\n\n"
+                "Схоже на анти-бот захист сайту (типово для великих "
+                "магазинів) — можлива блокування на рівні IP-адреси "
+                "GitHub Actions, а не помилка в коді.\n\n"
                 f'🔗 <a href="{PRODUCT_URL}">Перевірити вручну</a>'
             )
         return
@@ -401,7 +440,7 @@ def main():
         state["last_error"] = f"ціну для «{VARIANT}» не знайдено (спосіб: {source})"
         save_state(state)
         log(state["last_error"])
-        if state["fail_count"] == 3 or state["fail_count"] % 9 == 0:
+        if should_alert_on_failure(state["fail_count"]):
             send_telegram(
                 "⚠️ <b>Бот не знаходить ціну на сторінці</b>\n\n"
                 f"Схоже, Douglas змінив верстку. Спроб поспіль: {state['fail_count']}\n"
