@@ -78,6 +78,7 @@ BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
 TARGET_PRICE = os.environ.get("TARGET_PRICE", "").strip()  # необов'язково
 FORCE_NOTIFY = os.environ.get("FORCE_NOTIFY", "").strip().lower() in ("1", "true", "yes")
+SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "").strip()  # необов'язково, але дуже бажано
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
@@ -135,6 +136,26 @@ def fmt(value):
 
 # ══════════════════ ЗАВАНТАЖЕННЯ СТОРІНКИ ══════════════════
 
+def fetch_scraperapi():
+    """
+    ScraperAPI ходить на Douglas зі своїх преміальних IP-адрес, а не з
+    адреси GitHub Actions. Це розв'язує саме ту проблему, яку неможливо
+    вирішити підбором заголовків чи TLS-відбитка: погану репутацію
+    датацентрових IP GitHub на боці анти-бот захисту.
+    У них є постійний безкоштовний план — 1000 запитів/міс, для 3
+    перевірок на день цього вистачить із великим запасом.
+    """
+    if not SCRAPERAPI_KEY:
+        raise RuntimeError("SCRAPERAPI_KEY не задано")
+    r = requests.get(
+        "http://api.scraperapi.com",
+        params={"api_key": SCRAPERAPI_KEY, "url": PRODUCT_URL},
+        timeout=70,
+    )
+    r.raise_for_status()
+    return r.text
+
+
 def fetch_curl_cffi():
     """
     Запити з реальним TLS/HTTP2-відбитком Chrome. Anti-bot системи (DataDome,
@@ -183,6 +204,7 @@ def fetch_jina():
 def get_page():
     """Пробує способи по черзі. Повертає (текст_сторінки, назва_способу)."""
     attempts = [
+        ("ScraperAPI", fetch_scraperapi),
         ("curl_cffi (Chrome-фінгерпринт)", fetch_curl_cffi),
         ("прямий запит", fetch_direct),
         ("cloudscraper", fetch_cloudscraper),
