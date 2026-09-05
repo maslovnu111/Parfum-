@@ -1,7 +1,7 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-09-05T16:45:16+00:00",
+  "last_check": "2026-09-05T17:33:24+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
@@ -18,5 +18,6 @@
     "Studentenrabatt",
     "Douglas Angebote"
   ],
-  "source": "ScraperAPI"
+  "source": "ScraperAPI",
+  "top_banner": "GRATIS: 7 Duftproben von Juliette has a gun zur Bestellung ab 89 € Code: BANANA"
 }
