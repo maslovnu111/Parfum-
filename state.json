@@ -1,0 +1,5 @@
+{
+  "fail_count": 1,
+  "last_check": "2026-09-05T16:08:24+00:00",
+  "last_error": "прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: HTTPError 403 Client Error: Forbidden for url: https://r.jina.ai/https://www.douglas.de/de/p/5011160013"
+}
