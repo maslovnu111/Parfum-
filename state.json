@@ -1,7 +1,8 @@
 {
   "availability": "в наявності",
-  "fail_count": 0,
-  "last_check": "2026-09-08T08:23:00+00:00",
+  "fail_count": 1,
+  "last_check": "2026-09-08T13:56:56+00:00",
+  "last_error": "ScraperAPI: HTTPError 500 Server Error: Internal Server Error for url: http://api.scraperapi.com/?api_key=bffba08f9c9f7e5cddce7e62957e3745&url=https%3A%2F%2Fwww.douglas.de%2Fde%2Fp%2F5011160013 | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: HTTPError 403 Client Err",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
