@@ -1,13 +1,16 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-09-09T18:53:46+00:00",
+  "last_check": "2026-09-10T08:27:10+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
-  "promo_codes": [],
+  "promo_codes": [
+    "DUFT"
+  ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
+    "GRATIS: 3 Duftminis aussuchen zur Bestellung ab 99 €",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -16,5 +19,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "LETZTER TAG: –20% ohne Code – Entdecke deine neuen Herbst-Lieblinge!"
+  "top_banner": "GRATIS: 3 Duftminis aussuchen zur Bestellung ab 99 € Code: DUFT"
 }
