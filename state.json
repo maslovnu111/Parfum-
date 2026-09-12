@@ -1,15 +1,16 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-09-11T18:48:19+00:00",
+  "last_check": "2026-09-12T08:10:21+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
   "promo_codes": [
-    "DUFT"
+    "AVEDA"
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
+    "GRATIS: 2 Aveda-Minis zur Bestellung ab 89 €",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -18,5 +19,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "LETZTER TAG: 3 Duftminis aussuchen zur Bestellung ab 99 € Code: DUFT"
+  "top_banner": "GRATIS: 2 Aveda-Minis zur Bestellung ab 89 € Code: AVEDA"
 }
