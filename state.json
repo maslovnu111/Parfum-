@@ -1,16 +1,16 @@
 {
   "availability": "в наявності",
-  "fail_count": 1,
-  "last_check": "2026-09-13T18:23:09+00:00",
-  "last_error": "ScraperAPI: ReadTimeout HTTPConnectionPool(host='api.scraperapi.com', port=80): Read timed out. (read timeout=70) | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: HTTPError 403 Client Error: Forbidden for url: https://r.jina.ai/https://www.douglas.de/de/p/5011160013",
+  "fail_count": 0,
+  "last_check": "2026-09-14T09:18:43+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
   "promo_codes": [
-    "AVEDA"
+    "GLOW"
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
+    "Je nach Bestellwert bis zu 20 € Rabatt auf deinen Warenkorb",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -19,5 +19,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "LETZTER TAG: 2 Aveda-Minis zur Bestellung ab 89 € Code: AVEDA"
+  "top_banner": "Je nach Bestellwert bis zu 20 € Rabatt auf deinen Warenkorb Code: GLOW"
 }
