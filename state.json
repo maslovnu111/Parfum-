@@ -1,16 +1,16 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-09-14T16:01:28+00:00",
+  "last_check": "2026-09-15T09:01:00+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
   "promo_codes": [
-    "GLOW"
+    "HYPE"
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "Je nach Bestellwert bis zu 20 € Rabatt auf deinen Warenkorb",
+    "GRATIS: Hype Bag mit 6 Highlights zur App-Bestellung ab 119 €",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -19,5 +19,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "Je nach Bestellwert bis zu 20 € Rabatt auf deinen Warenkorb Code: GLOW"
+  "top_banner": "GRATIS: Hype Bag mit 6 Highlights zur App-Bestellung ab 119 € Code: HYPE"
 }
