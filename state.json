@@ -1,17 +1,14 @@
 {
   "availability": "в наявності",
-  "fail_count": 1,
-  "last_check": "2026-09-19T08:19:58+00:00",
-  "last_error": "ScraperAPI: HTTPError 500 Server Error: Internal Server Error for url: http://api.scraperapi.com/?api_key=bffba08f9c9f7e5cddce7e62957e3745&url=https%3A%2F%2Fwww.douglas.de%2Fde%2Fp%2F5011160013 | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: HTTPError 403 Client Err",
+  "fail_count": 0,
+  "last_check": "2026-09-19T13:31:16+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
-  "promo_codes": [
-    "PICK"
-  ],
+  "promo_codes": [],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "LETZTER TAG: 4 Gratis-Minis in der App – oder 3 ohne – ab 89 €!",
+    "–20% für deine Newsletter-Anmeldung – jetzt anmelden & keine News mehr verpassen!",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -20,5 +17,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "LETZTER TAG: 4 Gratis-Minis in der App – oder 3 ohne – ab 89 €! Code: PICK"
+  "top_banner": "20% für deine Newsletter-Anmeldung – jetzt anmelden & keine News mehr verpassen!"
 }
