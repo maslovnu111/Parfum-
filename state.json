@@ -1,14 +1,15 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-09-22T19:19:06+00:00",
+  "last_check": "2026-09-23T08:52:31+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
-  "promo_codes": [],
+  "promo_codes": [
+    "SALLY"
+  ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "–20% ohne Code – Jetzt Herbstlieblinge sichern!",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -17,5 +18,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "20% ohne Code – Jetzt Herbstlieblinge sichern!"
+  "top_banner": "LETZTER TAG: –20% ohne Code + Belly Mug ab 79 € geschenkt (Code: SALLY)!"
 }
