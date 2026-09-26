@@ -1,15 +1,16 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-09-25T19:37:24+00:00",
+  "last_check": "2026-09-26T08:52:06+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
   "promo_codes": [
-    "SALLY"
+    "GLOSS"
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
+    "GRATIS: 4 Kérastase Minis zur Bestellung ab 89 € mit Beauty Card",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -18,5 +19,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "GRATIS: Belly Mug zum Einkauf ab 79 € (Code: SALLY) – Löse deine Beauty Point ein bevor sie vefallen!"
+  "top_banner": "Code: GLOSS"
 }
