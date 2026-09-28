@@ -1,16 +1,15 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-09-27T19:21:25+00:00",
+  "last_check": "2026-09-28T10:14:32+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
   "promo_codes": [
-    "AUTUMN"
+    "SURPRISE"
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "NUR HEUTE: –20 % auf vieles – ab 79 € Bestellwert mit Beauty Card",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -19,5 +18,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "Code: AUTUMN"
+  "top_banner": "GRATIS: Überraschung zur Bestellung ab 59 € (Code: SURPRISE) – Jetzt Beauty Points einlösen, bevor sie verfallen"
 }
