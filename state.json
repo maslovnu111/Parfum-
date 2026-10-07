@@ -1,14 +1,13 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-10-06T20:36:50+00:00",
+  "last_check": "2026-10-07T10:37:54+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
   "promo_codes": [],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "–20 % Rabatt für dich! Alle Aktionsartikel sind schon reduziert.",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -17,5 +16,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "20 % Rabatt für dich! Alle Aktionsartikel sind schon reduziert."
+  "top_banner": "LETZTER TAG: –20 % Rabatt für dich! Alle Aktionsartikel sind schon reduziert."
 }
