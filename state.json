@@ -1,7 +1,7 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-10-08T20:53:30+00:00",
+  "last_check": "2026-10-09T10:57:43+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 94.0,
@@ -10,7 +10,6 @@
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "GRATIS: Bag mit 6 Luxus-Minis zur App-Bestellung ab 119 €",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -19,5 +18,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "GRATIS: Bag mit 6 Luxus-Minis zur App-Bestellung ab 119 € Code: LUXURY"
+  "top_banner": "LETZTER TAG: Bag mit 6 Luxus-Minis zur App-Bestellung ab 119 € Code: LUXURY"
 }
