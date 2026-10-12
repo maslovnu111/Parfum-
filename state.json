@@ -1,16 +1,21 @@
 {
   "availability": "в наявності",
   "fail_count": 0,
-  "last_check": "2026-10-12T11:23:32+00:00",
+  "history": [
+    {
+      "price": 97.89,
+      "t": "2026-10-12T22:38:10+00:00"
+    }
+  ],
+  "last_check": "2026-10-12T22:38:10+00:00",
   "min_price": 94.0,
   "old_price": null,
-  "price": 94.0,
+  "price": 97.89,
   "promo_codes": [
     "SAMPLES"
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "GRATIS: 10 Proben zur deiner App-Bestellung ab 89 €",
     "Achtung: Kann allergische Hautreaktionen verursachen.",
     "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
@@ -19,5 +24,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "GRATIS: 10 Proben zur deiner App-Bestellung ab 89 € Code: SAMPLES"
+  "top_banner": "LETZTER TAG: 10 Proben zur App-Bestellung ab 89 € Code: SAMPLES"
 }
