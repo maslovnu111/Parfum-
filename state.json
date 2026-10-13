@@ -7,12 +7,12 @@
       "t": "2026-10-12T22:38:10+00:00"
     }
   ],
-  "last_check": "2026-10-12T22:38:10+00:00",
+  "last_check": "2026-10-13T11:13:42+00:00",
   "min_price": 94.0,
   "old_price": null,
   "price": 97.89,
   "promo_codes": [
-    "SAMPLES"
+    "LUXURY"
   ],
   "promo_lines": [
     "2 Gratis-Proben nach Wahl ab 10 € ¹",
@@ -24,5 +24,5 @@
     "Douglas Angebote"
   ],
   "source": "ScraperAPI",
-  "top_banner": "LETZTER TAG: 10 Proben zur App-Bestellung ab 89 € Code: SAMPLES"
+  "top_banner": "NUR HEUTE: Bag mit 6 Luxus-Minis zur App-Bestellung ab 119 € Code: LUXURY"
 }
