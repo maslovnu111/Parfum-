@@ -1,14 +1,14 @@
 {
   "availability": "в наявності",
-  "fail_count": 7,
+  "fail_count": 8,
   "history": [
     {
       "price": 97.89,
       "t": "2026-10-12T22:38:10+00:00"
     }
   ],
-  "last_check": "2026-10-15T19:31:08+00:00",
-  "last_error": "ScraperAPI: HTTPError 401 Client Error: Unauthorized for url: http://api.scraperapi.com/?api_key=bffba08f9c9f7e5cddce7e62957e3745&url=https%3A%2F%2Fwww.douglas.de%2Fde%2Fp%2F5011160013 | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: відповідь замала (336)",
+  "last_check": "2026-10-16T08:33:09+00:00",
+  "last_error": "ScraperAPI: HTTPError 401 Client Error: Unauthorized for url: http://api.scraperapi.com/?api_key=bffba08f9c9f7e5cddce7e62957e3745&url=https%3A%2F%2Fwww.douglas.de%2Fde%2Fp%2F5011160013 | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: відповідь замала (340)",
   "min_price": 94.0,
   "old_price": null,
   "price": 97.89,
