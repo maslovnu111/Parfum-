@@ -1,6 +1,6 @@
 {
-  "availability": "невідомо",
-  "fail_count": 3,
+  "availability": "немає",
+  "fail_count": 0,
   "history": [
     {
       "price": 97.89,
@@ -9,25 +9,30 @@
     {
       "price": 94.0,
       "t": "2026-10-17T08:05:16+00:00"
+    },
+    {
+      "price": 74.99,
+      "t": "2026-10-18T13:38:36+00:00"
     }
   ],
-  "last_check": "2026-10-18T08:22:44+00:00",
-  "last_error": "ScraperAPI: HTTPError 401 Client Error: Unauthorized for url: http://api.scraperapi.com/?api_key=bffba08f9c9f7e5cddce7e62957e3745&url=https%3A%2F%2Fwww.douglas.de%2Fde%2Fp%2F5011160013 | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: відповідь замала (340)",
-  "min_price": 94.0,
-  "old_price": null,
-  "price": 94.0,
-  "promo_codes": [
-    "BANANA"
-  ],
+  "last_check": "2026-10-18T13:38:36+00:00",
+  "min_price": 74.99,
+  "old_price": 180.0,
+  "price": 74.99,
+  "promo_codes": [],
   "promo_lines": [
-    "2 Gratis-Proben nach Wahl ab 10 € ¹",
-    "Achtung: Kann allergische Hautreaktionen verursachen.",
-    "Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
+    "2 Gratis-Proben nach Wahl ab 10 €¹",
+    "[–20 % Rabatt ohne Code! – Jetzt schon ans Geschenke-Shopping denken!](https://www.douglas.de/de/cp/angebote/angebote)",
+    "* [Angebote](https://www.douglas.de/de/cp/angebote/angebote)Angebote Menü öffnen",
+    "* [Sale](https://www.douglas.de/de/c/preis-tipp/beauty-sale/0582?q=:relevance:flagName:SALE)",
+    "![Image 7: Icon Achtung: Kann allergische Hautreaktionen verursachen.](https://www.douglas.de/public/GHS07.9b16b0988cbf60ab.svg)",
+    "* 2 Gratis-Proben nach Wahl ab 10 € ¹",
+    "## Abonnier den Douglas-Newsletter und sicher dir einen 20%-Gutschein einlösbar auf den jeweils aktuellen Preis²!",
     "Erfahre ab sofort alles über die neuesten Beauty-Trends und Angebote.",
     "2 Gratis-Proben nach Wahl",
-    "Studentenrabatt",
-    "Douglas Angebote"
+    "* [Studentenrabatt](https://www.douglas.de/de/c/studentenrabatt/9926)",
+    "* [Douglas Angebote](https://www.douglas.de/de/cp/angebote/angebote)"
   ],
-  "source": "cloudscraper",
+  "source": "r.jina.ai",
   "top_banner": ""
 }
