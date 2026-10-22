@@ -563,20 +563,19 @@ def main():
     save_state(state)
 
     # ── 5. Надсилаємо ──
+    # За проханням: автоматичні перевірки сповіщають лише про реальне
+    # зниження ціни. Банер, акції, коди й наявність і далі відстежуються
+    # та потрапляють у стан (і в тіло повідомлення, якщо воно надсилається),
+    # але самі по собі більше не є приводом писати в Telegram.
     if first_run:
-        header = "✅ <b>Бот запущено</b> — стежу за ціною та акціями"
-    elif FORCE_NOTIFY and not reasons:
-        header = "ℹ️ <b>Перевірка вручну</b> — змін немає"
-    elif "price_drop" in reasons or "discount" in reasons:
+        header = "✅ <b>Бот запущено</b> — стежу за ціною"
+    elif FORCE_NOTIFY and "price_drop" not in reasons:
+        header = "ℹ️ <b>Перевірка вручну</b> — зниження ціни немає"
+    elif "price_drop" in reasons:
         header = "🔻 <b>Ціна впала!</b>"
-    elif "banner" in reasons:
-        header = "📌 <b>Змінився банер угорі сторінки Douglas</b>"
-    elif "codes" in reasons or "promos" in reasons:
-        header = "🎉 <b>Нова акція на Douglas</b>"
-    elif "stock" in reasons:
-        header = f"📦 <b>Змінилася наявність: {availability}</b>"
     else:
-        log("Змін немає — сповіщення не надсилаю.")
+        log("Ціна не знизилась — сповіщення не надсилаю "
+            f"(інші зміни: {[r for r in reasons if r != 'price_drop']}).")
         return
 
     send_telegram(build_message(
