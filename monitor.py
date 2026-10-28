@@ -107,14 +107,22 @@ def log(msg):
     print(f"[{datetime.now(KYIV_TZ):%H:%M:%S}] {msg}", flush=True)
 
 
+def redact(text: str) -> str:
+    """Ховає API-ключ у будь-якому тексті (лог, повідомлення в Telegram)."""
+    text = re.sub(r"(api_key=)[^&\s|\"']+", r"\1***", text)
+    if SCRAPERAPI_KEY:
+        text = text.replace(SCRAPERAPI_KEY, "***")
+    return text
+
+
 def should_alert_on_failure(fail_count: int) -> bool:
     """
-    Коли саме сповіщати про технічний збій.
-    1-ша і 3-тя невдала спроба поспіль — щоб одразу було видно проблему
-    (особливо важливо під час першого налаштування). Далі — раз на 9 спроб,
-    щоб не спамити, якщо блокування розтягнеться на дні.
+    Коли сповіщати про технічний збій, щоб бот не "мовчки помер", але й не
+    набридав: один раз на 3-й невдалій перевірці поспіль (це ~1 доба), далі
+    лише раз на тиждень (кожні 21 перевірку), поки проблема не зникне.
+    Після першої вдалої перевірки лічильник скидається.
     """
-    return fail_count in (1, 3) or fail_count % 9 == 0
+    return fail_count == 3 or (fail_count > 3 and (fail_count - 3) % 21 == 0)
 
 
 def to_float(german_price: str):
@@ -152,7 +160,9 @@ def fetch_scraperapi():
         params={"api_key": SCRAPERAPI_KEY, "url": PRODUCT_URL},
         timeout=70,
     )
-    r.raise_for_status()
+    if r.status_code != 200:
+        # без raise_for_status(): він вставляє в текст помилки повний URL разом із ключем
+        raise RuntimeError(f"HTTP {r.status_code}")
     return r.text
 
 
@@ -219,8 +229,9 @@ def get_page():
                 return raw, name
             errors.append(f"{name}: відповідь замала ({len(raw or '')})")
         except Exception as e:
-            errors.append(f"{name}: {type(e).__name__} {e}")
-            log(f"FAIL: {name} — {e}")
+            msg = redact(f"{type(e).__name__} {e}")
+            errors.append(f"{name}: {msg}")
+            log(f"FAIL: {name} — {msg}")
     raise RuntimeError(" | ".join(errors))
 
 
@@ -472,17 +483,36 @@ def main():
         raw, source = get_page()
     except Exception as e:
         state["fail_count"] = int(state.get("fail_count", 0)) + 1
-        state["last_error"] = str(e)[:500]
+        err_text = redact(str(e))
+        state["last_error"] = err_text[:500]
         save_state(state)
         log(f"Усі способи завантаження провалилися ({state['fail_count']} поспіль)")
         if should_alert_on_failure(state["fail_count"]):
+            if "ScraperAPI: RuntimeError HTTP 401" in err_text:
+                reason = (
+                    "ScraperAPI не приймає ключ (помилка 401). Це не збій "
+                    "сайту: потрібно взяти актуальний ключ у кабінеті "
+                    "scraperapi.com (Dashboard) і вставити його в секрет "
+                    "SCRAPERAPI_KEY у GitHub (Settings → Secrets and "
+                    "variables → Actions)."
+                )
+            elif "SCRAPERAPI_KEY не задано" in err_text:
+                reason = (
+                    "Ключ ScraperAPI не доданий у секрети GitHub "
+                    "(SCRAPERAPI_KEY). Без нього Douglas блокує бота."
+                )
+            else:
+                reason = (
+                    "Схоже на анти-бот захист сайту: Douglas блокує запити "
+                    "з адрес GitHub Actions."
+                )
             send_telegram(
                 "⚠️ <b>Бот не може відкрити сторінку Douglas</b>\n\n"
-                f"Невдалих спроб поспіль: {state['fail_count']}\n"
-                f"<code>{str(e)[:300]}</code>\n\n"
-                "Схоже на анти-бот захист сайту (типово для великих "
-                "магазинів) — можлива блокування на рівні IP-адреси "
-                "GitHub Actions, а не помилка в коді.\n\n"
+                f"Перевірок поспіль без результату: {state['fail_count']}\n\n"
+                f"{reason}\n\n"
+                f"<code>{err_text[:700]}</code>\n\n"
+                "Це повідомлення приходить не частіше ніж раз на тиждень, "
+                "поки проблему не буде усунено.\n"
                 f'🔗 <a href="{PRODUCT_URL}">Перевірити вручну</a>'
             )
         return
