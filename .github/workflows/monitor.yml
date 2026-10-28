@@ -2,8 +2,9 @@ name: Douglas price monitor
 
 on:
   schedule:
-    # 04:00, 10:00 і 16:00 UTC = 07:00, 13:00 і 19:00 за Києвом (літній час)
-    - cron: "0 4,10,16 * * *"
+    # Один раз на добу о 10:00 UTC = 12:00 за Києвом/Львовом узимку (UTC+2)
+    # і 13:00 влітку (UTC+3). GitHub рахує cron лише в UTC.
+    - cron: "0 10 * * *"
   workflow_dispatch:
     inputs:
       force_notify:
