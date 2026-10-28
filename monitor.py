@@ -52,6 +52,7 @@ PRODUCT_NAME = "Essential Parfums Bois Imperial EdP"
 VARIANT = "100 ml"
 
 STATE_FILE = "state.json"
+PREMIUM_MIN_HOURS = 10   # у преміум-режимі ScraperAPI — мінімум годин між перевірками
 KYIV_TZ = timezone(timedelta(hours=3))  # влітку UTC+3
 
 # Скільки символів ПЕРЕД згадкою об'єму шукаємо ціну.
@@ -118,11 +119,12 @@ def redact(text: str) -> str:
 def should_alert_on_failure(fail_count: int) -> bool:
     """
     Коли сповіщати про технічний збій, щоб бот не "мовчки помер", але й не
-    набридав: один раз на 3-й невдалій перевірці поспіль (це ~1 доба), далі
-    лише раз на тиждень (кожні 21 перевірку), поки проблема не зникне.
+    набридав: один раз на 3-й невдалій перевірці поспіль (перевірка раз на
+    добу, тож це 3 доби), далі лише раз на тиждень (кожні 7 перевірок),
+    поки проблема не зникне.
     Після першої вдалої перевірки лічильник скидається.
     """
-    return fail_count == 3 or (fail_count > 3 and (fail_count - 3) % 21 == 0)
+    return fail_count == 3 or (fail_count > 3 and (fail_count - 3) % 7 == 0)
 
 
 def to_float(german_price: str):
@@ -144,26 +146,57 @@ def fmt(value):
 
 # ══════════════════ ЗАВАНТАЖЕННЯ СТОРІНКИ ══════════════════
 
+# Режим ScraperAPI, з якого починати (беремо зі state.json), і що вийшло в цьому запуску.
+_SA_START_MODE = "standard"
+_SA_USED_MODE = None
+_SA_CODES = []   # HTTP-коди, які повернув ScraperAPI (для підказки в Telegram)
+
+
+def _scraperapi_request(mode: str):
+    params = {"api_key": SCRAPERAPI_KEY, "url": PRODUCT_URL}
+    if mode == "premium":
+        params["premium"] = "true"   # житлові/мобільні IP, 10 кредитів за запит
+    r = requests.get("http://api.scraperapi.com", params=params, timeout=75)
+    if r.status_code != 200:
+        _SA_CODES.append(r.status_code)
+        body = redact(" ".join((r.text or "").split()))[:160]
+        # без raise_for_status(): він вставляє в помилку повний URL разом із ключем
+        raise RuntimeError(f"HTTP {r.status_code}" + (f": {body}" if body else ""))
+    return r
+
+
 def fetch_scraperapi():
     """
-    ScraperAPI ходить на Douglas зі своїх преміальних IP-адрес, а не з
-    адреси GitHub Actions. Це розв'язує саме ту проблему, яку неможливо
-    вирішити підбором заголовків чи TLS-відбитка: погану репутацію
-    датацентрових IP GitHub на боці анти-бот захисту.
-    У них є постійний безкоштовний план — 1000 запитів/міс, для 3
-    перевірок на день цього вистачить із великим запасом.
+    ScraperAPI ходить на Douglas зі своїх IP-адрес, а не з адреси GitHub Actions.
+
+    Режими:
+      • standard — звичайний запит (дешево: 1 кредит);
+      • premium  — житлові/мобільні IP (10 кредитів). Документація ScraperAPI
+        прямо радить його для "protected domains", коли standard дає 500.
+
+    Починаємо з того режиму, що спрацював минулого разу, а при невдачі
+    пробуємо інший. Помилки 401 (поганий ключ) і 403 (кредити вичерпано)
+    режимом не лікуються — тоді одразу зупиняємось.
+    Невдалі запити (500) не списують кредити.
     """
+    global _SA_USED_MODE
     if not SCRAPERAPI_KEY:
         raise RuntimeError("SCRAPERAPI_KEY не задано")
-    r = requests.get(
-        "http://api.scraperapi.com",
-        params={"api_key": SCRAPERAPI_KEY, "url": PRODUCT_URL},
-        timeout=70,
-    )
-    if r.status_code != 200:
-        # без raise_for_status(): він вставляє в текст помилки повний URL разом із ключем
-        raise RuntimeError(f"HTTP {r.status_code}")
-    return r.text
+    order = [_SA_START_MODE] + [m for m in ("standard", "premium") if m != _SA_START_MODE]
+    errors = []
+    for mode in order:
+        try:
+            r = _scraperapi_request(mode)
+            _SA_USED_MODE = mode
+            log(f"ScraperAPI: режим {mode} спрацював")
+            return r.text
+        except Exception as e:
+            msg = redact(str(e))
+            errors.append(f"{mode}: {msg}")
+            log(f"ScraperAPI {mode}: {msg}")
+            if _SA_CODES and _SA_CODES[-1] in (401, 403):
+                break
+    raise RuntimeError("; ".join(errors))
 
 
 def fetch_curl_cffi():
@@ -475,8 +508,28 @@ def build_message(header, price, old_price, prev_price, min_price,
 
 def main():
     state = load_state()
+    global _SA_START_MODE
     now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
     state["last_check"] = now_iso
+
+    # Починаємо з режиму ScraperAPI, який спрацював минулого разу.
+    _SA_START_MODE = state.get("scraperapi_mode", "standard")
+
+    # Преміум-режим коштує 10 кредитів за запит, а на безкоштовному плані їх
+    # 1000 на місяць. Тому в преміум-режимі справжня перевірка робиться не
+    # частіше ніж раз на PREMIUM_MIN_HOURS годин. При запуску раз на добу це
+    # обмеження не заважає (≈310 кредитів на місяць); воно лише захищає від
+    # частих запусків. Ручний запуск (force_notify) його не має.
+    if (_SA_START_MODE == "premium" and not FORCE_NOTIFY and state.get("last_ok")):
+        try:
+            hours = (datetime.now(timezone.utc)
+                     - datetime.fromisoformat(state["last_ok"])).total_seconds() / 3600
+        except ValueError:
+            hours = 999
+        if hours < PREMIUM_MIN_HOURS:
+            log(f"Преміум-режим: остання вдала перевірка {hours:.1f} год тому "
+                f"(< {PREMIUM_MIN_HOURS} год) — пропускаю, щоб заощадити кредити.")
+            return
 
     # ── 1. Завантаження ──
     try:
@@ -488,13 +541,26 @@ def main():
         save_state(state)
         log(f"Усі способи завантаження провалилися ({state['fail_count']} поспіль)")
         if should_alert_on_failure(state["fail_count"]):
-            if "ScraperAPI: RuntimeError HTTP 401" in err_text:
+            if 401 in _SA_CODES:
                 reason = (
                     "ScraperAPI не приймає ключ (помилка 401). Це не збій "
                     "сайту: потрібно взяти актуальний ключ у кабінеті "
                     "scraperapi.com (Dashboard) і вставити його в секрет "
                     "SCRAPERAPI_KEY у GitHub (Settings → Secrets and "
                     "variables → Actions)."
+                )
+            elif 403 in _SA_CODES:
+                reason = (
+                    "У ScraperAPI закінчилися кредити на цей місяць "
+                    "(помилка 403). Вони оновляться самі — дату видно в "
+                    "кабінеті scraperapi.com у блоці Your plan."
+                )
+            elif _SA_CODES:
+                reason = (
+                    "Ключ ScraperAPI працює, але ScraperAPI не зміг відкрити "
+                    "сторінку Douglas (ні звичайним, ні преміум-способом). "
+                    "Найімовірніше, Douglas посилив захист. Нижче — що саме "
+                    "відповів ScraperAPI."
                 )
             elif "SCRAPERAPI_KEY не задано" in err_text:
                 reason = (
@@ -510,12 +576,16 @@ def main():
                 "⚠️ <b>Бот не може відкрити сторінку Douglas</b>\n\n"
                 f"Перевірок поспіль без результату: {state['fail_count']}\n\n"
                 f"{reason}\n\n"
-                f"<code>{err_text[:700]}</code>\n\n"
+                f"<code>{err_text.split(' | curl_cffi')[0][:600]}</code>\n\n"
                 "Це повідомлення приходить не частіше ніж раз на тиждень, "
                 "поки проблему не буде усунено.\n"
                 f'🔗 <a href="{PRODUCT_URL}">Перевірити вручну</a>'
             )
         return
+
+    state["last_ok"] = now_iso
+    if source == "ScraperAPI" and _SA_USED_MODE:
+        state["scraperapi_mode"] = _SA_USED_MODE
 
     text = to_text(raw)
 
