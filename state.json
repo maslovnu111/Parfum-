@@ -1,6 +1,6 @@
 {
   "availability": "в наявності",
-  "fail_count": 3,
+  "fail_count": 4,
   "history": [
     {
       "price": 97.89,
@@ -19,8 +19,8 @@
       "t": "2026-10-20T19:40:53+00:00"
     }
   ],
-  "last_check": "2026-11-06T17:02:15+00:00",
-  "last_error": "ScraperAPI: RuntimeError premium: HTTP 401: Unauthorized request, please make sure your API key is valid. | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: відповідь замала (424)",
+  "last_check": "2026-11-07T15:58:26+00:00",
+  "last_error": "ScraperAPI: RuntimeError premium: HTTP 401: Unauthorized request, please make sure your API key is valid. | curl_cffi (Chrome-фінгерпринт): HTTPError HTTP Error 403:  | прямий запит: HTTPError 400 Client Error: Bad Request for url: https://www.douglas.de/de/p/5011160013 | cloudscraper: HTTPError 403 Client Error: Forbidden for url: https://www.douglas.de/de/p/5011160013 | r.jina.ai: відповідь замала (340)",
   "last_ok": "2026-11-03T17:26:10+00:00",
   "min_price": 74.99,
   "old_price": null,
